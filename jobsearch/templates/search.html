@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locavancy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f23;
+            color: #ffffff;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 900px;
+            margin: 0 auto;
+            background: #1a1a2e;
+            position: relative;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
+            padding: 20px 30px;
+            border-bottom: 1px solid rgba(0, 244, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .ai-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #00f4ff 0%, #ff6b6b 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a1a2e;
+        }
+
+        .chat-title {
+            flex: 1;
+        }
+
+        .chat-title h1 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #00f4ff 0%, #ff6b6b 50%, #ffd93d 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .chat-title p {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(0, 244, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            opacity: 0;
+            animation: messageSlideIn 0.5s ease-out forwards;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .message.ai .message-avatar {
+            background: linear-gradient(135deg, #00f4ff 0%, #ff6b6b 100%);
+            color: #1a1a2e;
+        }
+
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+            color: #ffffff;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 16px 20px;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .message.ai .message-content {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(0, 244, 255, 0.1);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.user .message-content {
+            background: rgba(0, 244, 255, 0.1);
+            border: 1px solid rgba(0, 244, 255, 0.2);
+            border-bottom-right-radius: 4px;
+            color: #e2e8f0;
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+        }
+
+        .welcome-message .ai-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00f4ff 0%, #ff6b6b 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 20px;
+            color: #1a1a2e;
+        }
+
+        .welcome-message h3 {
+            font-size: 1.5rem;
+            color: #f8fafc;
+            margin-bottom: 10px;
+        }
+
+        .welcome-message p {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .example-queries {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .example-query {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(0, 244, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        .example-query:hover {
+            background: rgba(30, 41, 59, 0.9);
+            border-color: rgba(0, 244, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .job-result {
+            background: rgba(17, 24, 39, 0.8);
+            border: 1px solid rgba(0, 244, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        .job-result:hover {
+            border-color: rgba(0, 244, 255, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 244, 255, 0.1);
+        }
+
+        .job-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #f8fafc;
+            margin-bottom: 8px;
+        }
+
+        .job-company {
+            color: #00f4ff;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .job-location {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .job-apply-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 100%);
+            color: #1a1a2e;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .job-apply-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+        }
+
+        .nearby-places {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        .nearby-title {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .nearby-item {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            border-left: 2px solid #00f4ff;
+        }
+
+        .nearby-category {
+            color: #00f4ff;
+            font-weight: 500;
+        }
+
+        .nearby-name {
+            color: #e2e8f0;
+        }
+
+        .nearby-address {
+            color: #9ca3af;
+            font-size: 0.8rem;
+        }
+
+        .chat-input-container {
+            padding: 20px 30px;
+            background: rgba(16, 21, 46, 0.9);
+            border-top: 1px solid rgba(0, 244, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .chat-input-form {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            border-radius: 12px;
+            padding: 14px 18px;
+            color: #f8fafc;
+            font-size: 0.95rem;
+            resize: none;
+            outline: none;
+            transition: all 0.3s ease;
+            min-height: 50px;
+            max-height: 120px;
+        }
+
+        .chat-input:focus {
+            border-color: #00f4ff;
+            box-shadow: 0 0 0 2px rgba(0, 244, 255, 0.1);
+        }
+
+        .chat-input::placeholder {
+            color: #6b7280;
+        }
+
+        .chat-send-btn {
+            background: linear-gradient(135deg, #00f4ff 0%, #ff6b6b 100%);
+            border: none;
+            border-radius: 12px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a1a2e;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .chat-send-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 244, 255, 0.3);
+        }
+
+        .chat-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(0, 244, 255, 0.1);
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            max-width: 70%;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #00f4ff;
+            border-radius: 50%;
+            animation: typingDot 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingDot {
+            0%, 60%, 100% { opacity: 0.3; transform: scale(0.8); }
+            30% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .chat-container {
+                height: 100vh;
+                border-radius: 0;
+            }
+            
+            .chat-messages {
+                padding: 15px 20px;
+            }
+            
+            .chat-input-container {
+                padding: 15px 20px;
+            }
+            
+            .message-content {
+                max-width: 85%;
+            }
+            
+            .example-queries {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <div class="ai-avatar">🤖</div>
+            <div class="chat-title">
+                <h1>Locavancy</h1>
+                <p>Your intelligent career companion</p>
+            </div>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="chat-messages" id="chatMessages">
+            {% if not has_results %}
+            <div class="welcome-message">
+                <div class="ai-icon">🤖</div>
+                <h3>Welcome! I'm your AI Job Search Assistant</h3>
+                <p>I can help you find job opportunities, get career advice, and discover relevant information about companies and locations. Just tell me what you're looking for!</p>
+                
+                <div class="example-queries">
+                    <div class="example-query" onclick="fillQuery('Find software engineering jobs in Bangalore')">
+                        💻 Find software engineering jobs in Bangalore
+                    </div>
+                    <div class="example-query" onclick="fillQuery('Show me data scientist positions in Mumbai')">
+                        📊 Show me data scientist positions in Mumbai
+                    </div>
+                    <div class="example-query" onclick="fillQuery('Looking for marketing jobs in Delhi NCR')">
+                        📈 Looking for marketing jobs in Delhi NCR
+                    </div>
+                    <div class="example-query" onclick="fillQuery('Remote frontend developer opportunities')">
+                        🏠 Remote frontend developer opportunities
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if has_results %}
+                <!-- User Message -->
+                <div class="message user">
+                    <div class="message-avatar">👤</div>
+                    <div class="message-content">
+                        Looking for job opportunities...
+                    </div>
+                </div>
+
+                <!-- AI Response -->
+                <div class="message ai">
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        {% if jobs %}
+                            <p>Great! I found <strong>{{ jobs|length }} job opportunity{{ jobs|length|pluralize:"y,ies" }}</strong> that match your search. Here {{ jobs|length|pluralize:"is,are" }} what I discovered:</p>
+                            
+                            {% for job in jobs %}
+                                <div class="job-result">
+                                    <div class="job-title">{{ job.title }}</div>
+                                    <div class="job-company">🏢 {{ job.company }}</div>
+                                    <div class="job-location">📍 {{ job.location }}</div>
+                                    <a href="{{ job.url }}" target="_blank" class="job-apply-btn">
+                                        Apply Now →
+                                    </a>
+                                    
+                                    {% if job.nearby_places %}
+                                        <div class="nearby-places">
+                                            <div class="nearby-title">🗺️ Nearby Places & Amenities</div>
+                                            {% for place in job.nearby_places %}
+                                                <div class="nearby-item">
+                                                    <span class="nearby-category">{{ place.category|title }}</span>: 
+                                                    <span class="nearby-name">{{ place.name }}</span>
+                                                    <div class="nearby-address">
+                                                        {{ place.location.address|default:place.location.formatted_address|default:"Location not available" }}
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            
+                            <p style="margin-top: 20px; color: #94a3b8; font-size: 0.9rem;">
+                                💡 <em>Tip: You can ask me to refine your search, find jobs in different locations, or get more specific about job requirements!</em>
+                            </p>
+                        {% else %}
+                            <p>I couldn't find any job opportunities matching your current search criteria. Here are some suggestions:</p>
+                            <ul style="margin: 15px 0; padding-left: 20px; color: #cbd5e1;">
+                                <li>Try different keywords or job titles</li>
+                                <li>Expand your location preferences</li>
+                                <li>Consider related roles or industries</li>
+                                <li>Check for spelling variations</li>
+                            </ul>
+                            <p style="color: #94a3b8;">Would you like me to help you refine your search or try a different approach?</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Typing Indicator (hidden by default) -->
+        <div class="typing-indicator" id="typingIndicator">
+            <div class="message-avatar">🤖</div>
+            <div style="color: #94a3b8; font-size: 0.9rem;">
+                AI is searching...
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="chat-input-container">
+            <form method="POST" class="chat-input-form" onsubmit="handleSubmit(event)">
+                {% csrf_token %}
+                <textarea 
+                    name="query" 
+                    class="chat-input" 
+                    placeholder="Ask me about job opportunities, career advice, or anything related to your job search..."
+                    rows="1"
+                    id="chatInput"
+                    onkeydown="handleKeyDown(event)"
+                ></textarea>
+                <button type="submit" class="chat-send-btn" id="sendBtn">
+                    ➤
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Auto-resize textarea
+        const chatInput = document.getElementById('chatInput');
+        chatInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // Handle Enter key (send message)
+      function handleKeyDown(event) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        if (chatInput.value.trim()) {
+            document.querySelector('.chat-input-form').requestSubmit(); // this triggers onsubmit
+        }
+    }
+}
+
+
+
+        // Handle form submission
+   function handleSubmit(event) {
+    const inputValue = chatInput.value.trim();
+    if (!inputValue) {
+        event.preventDefault();
+        return;
+    }
+
+    // Show typing indicator
+    showTypingIndicator();
+
+    // Disable send button
+    document.getElementById('sendBtn').disabled = true;
+
+    // DO NOT clear chatInput yet — let it submit with the value first
+    // Instead, clear after short delay so form has already been submitted
+    setTimeout(() => {
+        chatInput.value = '';
+        chatInput.style.height = 'auto';
+    }, 100); // small delay to ensure backend receives value
+}
+
+
+
+
+        // Fill query from example
+        function fillQuery(query) {
+            chatInput.value = query;
+            chatInput.focus();
+            chatInput.style.height = 'auto';
+            chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+            // Enable send button
+            document.getElementById('sendBtn').disabled = false;
+        }
+
+        // Show typing indicator
+        function showTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            const messages = document.getElementById('chatMessages');
+            indicator.style.display = 'flex';
+            messages.appendChild(indicator);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        // Auto-scroll to bottom on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const messages = document.getElementById('chatMessages');
+            messages.scrollTop = messages.scrollHeight;
+            
+            // Focus input
+            chatInput.focus();
+            
+            // Add stagger animation to messages
+            const messageElements = document.querySelectorAll('.message');
+            messageElements.forEach((message, index) => {
+                message.style.animationDelay = `${index * 0.2}s`;
+            });
+        });
+
+        // Handle input changes
+        chatInput.addEventListener('input', function() {
+            const sendBtn = document.getElementById('sendBtn');
+            sendBtn.disabled = !this.value.trim();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: job-search-django
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn jobsearch_project.wsgi:application"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: jobsearch_project.settings
