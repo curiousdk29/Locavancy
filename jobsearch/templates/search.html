@@ -26,8 +26,7 @@
         {% for job in jobs %}
           <div class="job-card bg-white p-6 rounded-xl shadow hover:shadow-lg transition"
                data-company="{{ job.company|escapejs }}"
-               data-location="{{ job.location|escapejs }}"
-               id="job-{{ forloop.counter }}">
+               data-location="{{ job.location|escapejs }}">
             <h2 class="text-xl font-semibold">{{ job.title }}</h2>
             <p class="text-gray-600">{{ job.company }}</p>
             <p class="text-sm text-gray-500">{{ job.location }}</p>
@@ -50,23 +49,20 @@
   <script>
     document.addEventListener("DOMContentLoaded", function() {
 
-      // Grab all job cards
       const jobCards = document.querySelectorAll(".job-card");
 
-      // Helper function to fetch nearby places for a single job
       function fetchNearbyPlaces(card) {
         const company = card.dataset.company;
         const location = card.dataset.location;
-        const placesContainer = card.querySelector(".nearby-places");
+        const container = card.querySelector(".nearby-places");
 
-        // Construct URL using Django {% url %} for safety
         const url = "{% url 'load_nearby_places' %}" +
                     `?company=${encodeURIComponent(company)}&location=${encodeURIComponent(location)}`;
 
         fetch(url)
           .then(res => res.json())
           .then(data => {
-            placesContainer.innerHTML = "";
+            container.innerHTML = "";
             if (data.nearby_places && data.nearby_places.length > 0) {
               const ul = document.createElement("ul");
               data.nearby_places.forEach(place => {
@@ -74,19 +70,19 @@
                 li.textContent = place.name + (place.category ? ` (${place.category})` : '');
                 ul.appendChild(li);
               });
-              placesContainer.appendChild(ul);
+              container.appendChild(ul);
             } else {
-              placesContainer.innerHTML = "<em>No nearby places found.</em>";
+              container.innerHTML = "<em>No nearby places found.</em>";
             }
           })
           .catch(err => {
             console.error("Nearby places fetch error:", err);
-            placesContainer.innerHTML = "<em>Could not load nearby places.</em>";
+            container.innerHTML = "<em>Could not load nearby places.</em>";
           });
       }
 
-      // Optionally, fetch in batches to reduce simultaneous requests
-      const batchSize = 5; // adjust based on number of jobs
+      // Fetch in batches to avoid too many simultaneous requests
+      const batchSize = 5;
       for (let i = 0; i < jobCards.length; i += batchSize) {
         const batch = Array.from(jobCards).slice(i, i + batchSize);
         batch.forEach(card => fetchNearbyPlaces(card));
