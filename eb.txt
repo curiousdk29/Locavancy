@@ -1,0 +1,112 @@
+Retrieving logs...
+============= i-0827aa62f7314b37e ==============
+----------------------------------------
+/var/log/eb-engine.log
+----------------------------------------
+      
+              License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)
+      
+              See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+              ********************************************************************************
+      
+      !!
+        self._finalize_license_expression()
+      running egg_info
+      writing psycopg2.egg-info/PKG-INFO
+      writing dependency_links to psycopg2.egg-info/dependency_links.txt
+      writing top-level names to psycopg2.egg-info/top_level.txt
+      
+      Error: pg_config executable not found.
+      
+      pg_config is required to build psycopg2 from source.  Please add the directory
+      containing pg_config to the $PATH or specify the full executable path with the
+      option:
+      
+          python setup.py build_ext --pg-config /path/to/pg_config build ...
+      
+      or with the pg_config option in 'setup.cfg'.
+      
+      If you prefer to avoid building psycopg2 from source, please install the PyPI
+      'psycopg2-binary' package instead.
+      
+      For further information please check the 'doc/src/install.rst' file (also at
+      <https://www.psycopg.org/docs/install.html>).
+      
+      [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+error: subprocess-exited-with-error
+
+× Getting requirements to build wheel did not run successfully.
+│ exit code: 1
+╰─> See above for output.
+
+note: This error originates from a subprocess, and is likely not a problem with pip.
+ 
+
+2025/08/23 09:59:32.918349 [INFO] Executing cleanup logic
+2025/08/23 09:59:32.918444 [INFO] CommandService Response: {"status":"FAILURE","api_version":"1.0","results":[{"status":"FAILURE","msg":"Engine execution has encountered an error.","returncode":1,"events":[{"msg":"Instance deployment failed to install application dependencies. The deployment failed.","timestamp":1755943172918,"severity":"ERROR"},{"msg":"Instance deployment failed. For details, see 'eb-engine.log'.","timestamp":1755943172918,"severity":"ERROR"}]}]}
+
+2025/08/23 09:59:32.919546 [INFO] Platform Engine finished execution on command: app-deploy
+
+2025/08/23 09:59:55.456943 [INFO] Starting...
+2025/08/23 09:59:55.456985 [INFO] Starting EBPlatform-PlatformEngine
+2025/08/23 09:59:55.457007 [INFO] reading event message file
+2025/08/23 09:59:55.457315 [INFO] Engine received EB command cfn-hup-exec
+
+2025/08/23 09:59:55.522318 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:us-west-2:027540913972:stack/awseb-e-vizm3hbibc-stack/aedd0ec0-8005-11f0-8490-0633e76b6aeb -r AWSEBAutoScalingGroup --region us-west-2
+2025/08/23 09:59:55.813194 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:us-west-2:027540913972:stack/awseb-e-vizm3hbibc-stack/aedd0ec0-8005-11f0-8490-0633e76b6aeb -r AWSEBBeanstalkMetadata --region us-west-2
+2025/08/23 09:59:56.094127 [INFO] checking whether command tail-log is applicable to this instance...
+2025/08/23 09:59:56.094141 [INFO] this command is applicable to the instance, thus instance should execute command
+2025/08/23 09:59:56.094147 [INFO] Engine command: (tail-log)
+
+2025/08/23 09:59:56.094199 [INFO] Executing instruction: GetTailLogs
+2025/08/23 09:59:56.094202 [INFO] Tail Logs...
+2025/08/23 09:59:56.094506 [INFO] Running command: tail -n 100 /var/log/eb-hooks.log
+2025/08/23 09:59:56.096716 [INFO] Running command: tail -n 100 /var/log/eb-engine.log
+2025/08/23 09:59:56.148551 [INFO] Executing cleanup logic
+2025/08/23 09:59:56.148628 [INFO] CommandService Response: {"status":"SUCCESS","api_version":"1.0","results":[{"status":"SUCCESS","msg":"Engine execution has succeeded.","returncode":0,"events":[{"msg":"Instance deployment completed successfully.","timestamp":1755943196148,"severity":"INFO"}]}]}
+
+2025/08/23 09:59:56.148645 [INFO] Platform Engine finished execution on command: tail-log
+
+2025/08/23 10:03:30.364924 [INFO] Starting...
+2025/08/23 10:03:30.364969 [INFO] Starting EBPlatform-PlatformEngine
+2025/08/23 10:03:30.364993 [INFO] reading event message file
+2025/08/23 10:03:30.365332 [INFO] Engine received EB command cfn-hup-exec
+
+2025/08/23 10:03:30.431346 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:us-west-2:027540913972:stack/awseb-e-vizm3hbibc-stack/aedd0ec0-8005-11f0-8490-0633e76b6aeb -r AWSEBAutoScalingGroup --region us-west-2
+2025/08/23 10:03:30.729380 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:us-west-2:027540913972:stack/awseb-e-vizm3hbibc-stack/aedd0ec0-8005-11f0-8490-0633e76b6aeb -r AWSEBBeanstalkMetadata --region us-west-2
+2025/08/23 10:03:31.023635 [INFO] checking whether command tail-log is applicable to this instance...
+2025/08/23 10:03:31.023650 [INFO] this command is applicable to the instance, thus instance should execute command
+2025/08/23 10:03:31.023656 [INFO] Engine command: (tail-log)
+
+2025/08/23 10:03:31.023712 [INFO] Executing instruction: GetTailLogs
+2025/08/23 10:03:31.023717 [INFO] Tail Logs...
+2025/08/23 10:03:31.024068 [INFO] Running command: tail -n 100 /var/log/eb-engine.log
+2025/08/23 10:03:31.026388 [INFO] Running command: tail -n 100 /var/log/eb-hooks.log
+2025/08/23 10:03:31.073769 [INFO] Executing cleanup logic
+2025/08/23 10:03:31.073841 [INFO] CommandService Response: {"status":"SUCCESS","api_version":"1.0","results":[{"status":"SUCCESS","msg":"Engine execution has succeeded.","returncode":0,"events":[{"msg":"Instance deployment completed successfully.","timestamp":1755943411073,"severity":"INFO"}]}]}
+
+2025/08/23 10:03:31.073858 [INFO] Platform Engine finished execution on command: tail-log
+
+2025/08/23 10:04:06.977842 [INFO] Starting...
+2025/08/23 10:04:06.977887 [INFO] Starting EBPlatform-PlatformEngine
+2025/08/23 10:04:06.977907 [INFO] reading event message file
+2025/08/23 10:04:06.978222 [INFO] Engine received EB command cfn-hup-exec
+
+2025/08/23 10:04:07.049857 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:us-west-2:027540913972:stack/awseb-e-vizm3hbibc-stack/aedd0ec0-8005-11f0-8490-0633e76b6aeb -r AWSEBAutoScalingGroup --region us-west-2
+2025/08/23 10:04:07.342333 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:us-west-2:027540913972:stack/awseb-e-vizm3hbibc-stack/aedd0ec0-8005-11f0-8490-0633e76b6aeb -r AWSEBBeanstalkMetadata --region us-west-2
+2025/08/23 10:04:07.624533 [INFO] checking whether command tail-log is applicable to this instance...
+2025/08/23 10:04:07.624544 [INFO] this command is applicable to the instance, thus instance should execute command
+2025/08/23 10:04:07.624546 [INFO] Engine command: (tail-log)
+
+2025/08/23 10:04:07.624588 [INFO] Executing instruction: GetTailLogs
+2025/08/23 10:04:07.624591 [INFO] Tail Logs...
+2025/08/23 10:04:07.624842 [INFO] Running command: tail -n 100 /var/log/eb-engine.log
+
+
+----------------------------------------
+/var/log/eb-hooks.log
+----------------------------------------
+
+
