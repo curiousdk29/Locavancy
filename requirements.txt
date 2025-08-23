@@ -89,3 +89,4 @@ paramiko==4.0.0
 requests==2.32.4
 s3transfer==0.13.1
 wrapt==1.17.3
+django-heroku==0.1.5
