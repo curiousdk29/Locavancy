@@ -29,5 +29,16 @@ Follow these steps to run the project locally.
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/your-repo.git
+1.git clone https://github.com/your-username/your-repo.git
 cd your-repo
+2. Create a `.env` file in the root folder
+3. Add the following variables (replace with your own keys):
+   - GEMINI_API_KEY
+   - RAPIDAPI_KEY
+   - FSQ_API_KEY
+4. python -m venv venv for creating a virtual environment
+source venv/bin/activate   # Mac/Linux
+venv\Scripts\activate      # Windows
+pip install -r requirements.txt
+python manage.py runserver
+
